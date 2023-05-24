@@ -1,0 +1,21 @@
+- name: Create kubeadm token
+  shell: kubeadm token create --print-join-command
+  register: join_command_raw
+  when:
+    - (cluster_role is defined) and (cluster_role == 'master')
+
+
+- name: Set join command
+  set_fact:
+    join_command: "{{ join_command_raw.stdout_lines[0] }}"
+  when:
+    - (cluster_role is defined) and (cluster_role == 'master')
+
+ 
+- name: Join to Cluster
+  shell: "{{ hostvars['master01'].join_command }} >> node_joined.txt"
+  args:
+    chdir: $HOME
+    creates: node_joined.txt
+  when:
+    - (cluster_role is defined) and (cluster_role == 'worker')

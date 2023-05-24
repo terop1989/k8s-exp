@@ -1,0 +1,3 @@
+[plugins.cri]
+  stream_server_address = "127.0.0.1"
+  enable_tls_streaming = false

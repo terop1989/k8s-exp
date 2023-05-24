@@ -1,0 +1,56 @@
+- name: Install Containerd
+  apt:
+    name: containerd
+    state: present
+    update_cache: true
+
+- name: Create Containerd Config Directory
+  file:
+    path: /etc/containerd
+    state: directory
+    mode: '0755'
+
+- name: Copy Containerd Config File to Remote Hosts
+  copy:
+    src: config.toml
+    dest: /etc/containerd/config.toml
+
+- name: Restart Containerd Service
+  service:
+    name: containerd
+    state: restarted
+
+- name: Install APT Transport HTTPS
+  apt:
+    name: apt-transport-https
+    state: present
+
+- name: Add Kubernetes apt-key
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Add Kubernetes APT repository
+  apt_repository:
+    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+    filename: 'kubernetes'
+
+- name: Install kubelet
+  apt:
+    name: kubelet={{ k8s_version }}
+    state: present
+    update_cache: true
+
+- name: Install kubeadm
+  apt:
+    name: kubeadm={{ k8s_version }}
+    state: present
+
+- name: Install kubectl in Master Node
+  apt:
+    name: kubectl={{ k8s_version }}
+    state: present
+    force: yes
+  when:
+    - (cluster_role is defined) and (cluster_role == 'master')

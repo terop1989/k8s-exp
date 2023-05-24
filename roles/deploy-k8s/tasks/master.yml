@@ -1,0 +1,70 @@
+- name: Copy k8s-config.yml to Master Node
+  template:
+    src: k8s-config.yml.j2
+    dest: /tmp/k8s-config.yml
+
+- name: Initialize the Cluster
+  shell:  kubeadm init --config /tmp/k8s-config.yml  >> cluster_initialized.txt
+  args:
+    chdir: $HOME
+    creates: cluster_initialized.txt
+
+- name: Create K8S Admin User
+  user:
+    name: "{{ k8s_admin }}"
+    home: /home/{{ k8s_admin }}
+    append: yes
+    state: present
+    shell: /bin/bash
+
+- name: Create a dedicated sudo entry file for the K8S Admin
+  file:
+    path: "/etc/sudoers.d/{{ k8s_admin }}"
+    state: touch
+    mode: '0600'
+
+- name: Setting up Sudo without Password for user "{{ k8s_admin }}"
+  lineinfile:
+    dest: "/etc/sudoers.d/{{ k8s_admin }}"
+    line: '{{ k8s_admin }}  ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+
+- name: Set authorized key for user copying it from current {{ k8s_admin }}  user.
+  authorized_key:
+    user: "{{ k8s_admin }}"
+    state: present
+    key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+
+- name: Create .kube directory
+  become: yes
+  become_user: "{{ k8s_admin }}"
+  file:
+    path: $HOME/.kube
+    state: directory
+    mode: 0755
+
+- name: Copy admin.conf to user's kube config
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /home/{{ k8s_admin }}/.kube/config
+    remote_src: yes
+    owner: "{{ k8s_admin }}"
+
+- name: Download Calico Manifest
+  get_url:
+    url: https://docs.projectcalico.org/v3.10/manifests/calico.yaml
+    dest: /tmp
+
+- name: Replace Pod CIDR
+  replace:
+    path: /tmp/calico.yaml
+    regexp: '192.168.0.0/16'
+    replace: '{{ pod_network_cidr }}'
+
+- name: Install Calico
+  become: yes
+  become_user: "{{ k8s_admin }}"
+  shell: kubectl apply -f /tmp/calico.yaml
+  args:
+    chdir: $HOME
+    creates: pod_network_setup.txt

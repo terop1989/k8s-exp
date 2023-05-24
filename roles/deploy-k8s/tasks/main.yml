@@ -1,0 +1,13 @@
+- name: Bootstrap
+  include_tasks: bootstrap.yml
+
+- name: Install Dependencies
+  include_tasks: install-dependencies.yml
+
+- name: Master Tasks
+  include_tasks: master.yml
+  when:
+    -(cluster_role is defined) and (cluster_role == 'master')
+
+- name: Workers Tasks
+  include_tasks: workers.yml
