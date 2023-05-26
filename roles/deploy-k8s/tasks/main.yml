@@ -7,7 +7,7 @@
 - name: Master Tasks
   include_tasks: master.yml
   when:
-    -(cluster_role is defined) and (cluster_role == 'master')
+    - inventory_hostname in groups['master']
 
 - name: Workers Tasks
   include_tasks: workers.yml

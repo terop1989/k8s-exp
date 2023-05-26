@@ -53,4 +53,4 @@
     state: present
     force: yes
   when:
-    - (cluster_role is defined) and (cluster_role == 'master')
+    - inventory_hostname in groups['master']
