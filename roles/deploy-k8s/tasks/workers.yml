@@ -13,7 +13,7 @@
 
  
 - name: Join to Cluster
-  shell: "{{ hostvars['master01'].join_command }} >> node_joined.txt"
+  shell: "{{ hostvars[groups['master'][0]].join_command }} >> node_joined.txt"
   args:
     chdir: $HOME
     creates: node_joined.txt
