@@ -9,6 +9,12 @@
     chdir: $HOME
     creates: cluster_initialized.txt
 
+- name: Fetch admin.conf file
+  fetch:
+    src: /etc/kubernetes/admin.conf
+    dest: /tmp/admin.conf
+    flat: yes
+
 - name: Create K8S Admin User
   user:
     name: "{{ k8s_admin }}"
@@ -45,9 +51,8 @@
 
 - name: Copy admin.conf to user's kube config
   copy:
-    src: /etc/kubernetes/admin.conf
+    src: /tmp/admin.conf
     dest: /home/{{ k8s_admin }}/.kube/config
-    remote_src: yes
     owner: "{{ k8s_admin }}"
 
 - name: Download Calico Manifest

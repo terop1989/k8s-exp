@@ -1,4 +1,7 @@
-[master]
+[master:children]
+init_master
+
+[init_master]
 k8s-01.local.com
 
 [workers]
