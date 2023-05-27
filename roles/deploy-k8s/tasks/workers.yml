@@ -2,18 +2,18 @@
   shell: kubeadm token create --print-join-command
   register: join_command_raw
   when:
-    - inventory_hostname in groups['master']
+    - inventory_hostname in groups['init_master']
 
 
 - name: Set join command
   set_fact:
     join_command: "{{ join_command_raw.stdout_lines[0] }}"
   when:
-    - inventory_hostname in groups['master']
+    - inventory_hostname in groups['init_master']
 
  
 - name: Join to Cluster
-  shell: "{{ hostvars[groups['master'][0]].join_command }} >> node_joined.txt"
+  shell: "{{ hostvars[groups['init_master'][0]].join_command }} >> node_joined.txt"
   args:
     chdir: $HOME
     creates: node_joined.txt
