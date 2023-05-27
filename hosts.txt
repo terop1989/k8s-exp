@@ -1,5 +1,5 @@
 [master]
-master01 ansible_host=k8s-01.local.com cluster_role=master
+k8s-01.local.com
 
 [workers]
-k8s-0[2:3].local.com                   cluster_role=worker
+k8s-0[2:3].local.com
