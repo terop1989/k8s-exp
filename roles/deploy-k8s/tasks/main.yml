@@ -4,6 +4,11 @@
 - name: Install Dependencies
   include_tasks: install-dependencies.yml
 
+- name: HA
+  include_tasks: ha.yml
+  when:
+    - inventory_hostname in groups['master']
+
 - name: Master Tasks
   include_tasks: master.yml
   when:
