@@ -8,5 +8,5 @@ k8s-01.local.com
 ha_cluster_virtual_ip=192.168.0.179
 ha_cluster_virtual_port=7443
 
-[workers]
+[worker]
 k8s-0[2:3].local.com

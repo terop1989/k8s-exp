@@ -23,6 +23,6 @@
     - master
 
 - name: Workers Tasks
-  import_tasks: workers.yml
+  import_tasks: worker.yml
   tags:
     - worker
