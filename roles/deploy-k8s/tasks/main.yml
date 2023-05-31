@@ -1,18 +1,28 @@
 - name: Bootstrap
-  include_tasks: bootstrap.yml
+  import_tasks: bootstrap.yml
+  tags:
+    - bootstrap
 
 - name: Install Dependencies
-  include_tasks: install-dependencies.yml
+  import_tasks: install-dependencies.yml
+  tags:
+    - depends
 
 - name: HA
-  include_tasks: ha.yml
+  import_tasks: ha.yml
   when:
     - inventory_hostname in groups['master']
+  tags:
+    - ha
 
 - name: Master Tasks
-  include_tasks: master.yml
+  import_tasks: master.yml
   when:
     - inventory_hostname in groups['master']
+  tags:
+    - master
 
 - name: Workers Tasks
-  include_tasks: workers.yml
+  import_tasks: workers.yml
+  tags:
+    - worker
