@@ -34,7 +34,6 @@
           kubeadm join {{ hostvars[groups['init_master'][0]].join_path.stdout }} \
           --token {{ hostvars[groups['init_master'][0]].join_token.stdout }} \
           --discovery-token-ca-cert-hash sha256:{{ hostvars[groups['init_master'][0]].discovery_token_ca_cert_hash.stdout }} 
-
     - name: Kubelet enable
       service:
         name: kubelet
