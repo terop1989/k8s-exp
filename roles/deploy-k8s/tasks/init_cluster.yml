@@ -1,0 +1,16 @@
+- name: Copy k8s-config.yml to Master Node
+  template:
+    src: k8s-config.yml.j2
+    dest: /tmp/k8s-config.yml
+
+- name: Initialize the K8S Cluster
+  shell:  kubeadm init --config /tmp/k8s-config.yml  >> cluster_initialized.txt
+  args:
+    chdir: $HOME
+    creates: cluster_initialized.txt
+
+- name: Fetch admin.conf file
+  fetch:
+    src: /etc/kubernetes/admin.conf
+    dest: /tmp/admin.conf
+    flat: yes
