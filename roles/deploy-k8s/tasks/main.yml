@@ -15,6 +15,13 @@
   tags:
     - ha
 
+- name: Initialize K8S Cluster
+  import_tasks: init_cluster.yml
+  when:
+    - inventory_hostname in groups['init_master']
+  tags:
+    - init
+
 - name: Master Tasks
   import_tasks: master.yml
   when:
@@ -22,7 +29,14 @@
   tags:
     - master
 
-- name: Workers Tasks
-  import_tasks: worker.yml
+- name: Install Calico
+  import_tasks: install_calico.yml
+  when:
+    - inventory_hostname in groups['init_master']
   tags:
-    - worker
+    - calico
+
+- name: Join Workers
+  import_tasks: join_workers.yml
+  tags:
+    - join_workers

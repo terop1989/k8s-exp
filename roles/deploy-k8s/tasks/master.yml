@@ -1,26 +1,3 @@
-- name: Initialize the Cluster
-  block:
-
-    - name: Copy k8s-config.yml to Master Node
-      template:
-        src: k8s-config.yml.j2
-        dest: /tmp/k8s-config.yml
-
-    - name: Initialize the Cluster
-      shell:  kubeadm init --config /tmp/k8s-config.yml  >> cluster_initialized.txt
-      args:
-        chdir: $HOME
-        creates: cluster_initialized.txt
-
-    - name: Fetch admin.conf file
-      fetch:
-        src: /etc/kubernetes/admin.conf
-        dest: /tmp/admin.conf
-        flat: yes
-
-  when: inventory_hostname in groups['init_master']
-
-
 - name: Create K8S Admin User
   user:
     name: "{{ k8s_admin }}"
@@ -60,28 +37,3 @@
     src: /tmp/admin.conf
     dest: /home/{{ k8s_admin }}/.kube/config
     owner: "{{ k8s_admin }}"
-
-
-- name: Install Calico
-  block:
-
-    - name: Download Calico Manifest
-      get_url:
-        url: https://docs.projectcalico.org/v3.10/manifests/calico.yaml
-        dest: /tmp
-
-    - name: Replace Pod CIDR
-      replace:
-        path: /tmp/calico.yaml
-        regexp: '192.168.0.0/16'
-        replace: '{{ pod_network_cidr }}'
-
-    - name: Install Calico
-      become: yes
-      become_user: "{{ k8s_admin }}"
-      shell: kubectl apply -f /tmp/calico.yaml
-      args:
-        chdir: $HOME
-        creates: pod_network_setup.txt
-
-  when: inventory_hostname in groups['init_master']

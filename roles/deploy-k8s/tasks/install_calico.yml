@@ -1,0 +1,18 @@
+- name: Download Calico Manifest
+  get_url:
+    url: https://docs.projectcalico.org/v3.10/manifests/calico.yaml
+    dest: /tmp
+
+- name: Replace Pod CIDR
+  replace:
+    path: /tmp/calico.yaml
+    regexp: '192.168.0.0/16'
+    replace: '{{ pod_network_cidr }}'
+
+- name: Install Calico
+  become: yes
+  become_user: "{{ k8s_admin }}"
+  shell: kubectl apply -f /tmp/calico.yaml
+  args:
+    chdir: $HOME
+    creates: pod_network_setup.txt

@@ -9,10 +9,12 @@
 - name: Install Packages
   apt:
     name:
-      - keepalived
-      - haproxy
+      - "{{ item }}"
     state: present
     update_cache: true
+  loop:
+    - keepalived
+    - haproxy
 
 - name: Copy keepalived.conf to master
   template:
@@ -31,7 +33,7 @@
     name: "{{ item }}"
     state: started
     enabled: yes
-  with_items:
+  loop:
     - keepalived
     - haproxy
 
