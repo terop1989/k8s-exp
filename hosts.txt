@@ -2,11 +2,11 @@
 init_master
 
 [init_master]
-k8s-local-1.local.com
+k8s-01.local.com
 
 [master:vars]
-ha_cluster_virtual_ip=172.16.99.110
+ha_cluster_virtual_ip=192.168.0.179
 ha_cluster_virtual_port=7443
 
 [worker]
-k8s-local-[2:3].local.com
+k8s-0[2:3].local.com
