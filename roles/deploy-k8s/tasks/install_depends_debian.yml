@@ -38,18 +38,18 @@
 
 - name: Install kubelet
   apt:
-    name: kubelet={{ k8s_version }}
+    name: kubelet={{ k8s_version }}-00
     state: present
     update_cache: true
 
 - name: Install kubeadm
   apt:
-    name: kubeadm={{ k8s_version }}
+    name: kubeadm={{ k8s_version }}-00
     state: present
 
 - name: Install kubectl in Master Node
   apt:
-    name: kubectl={{ k8s_version }}
+    name: kubectl={{ k8s_version }}-00
     state: present
     force: yes
   when:

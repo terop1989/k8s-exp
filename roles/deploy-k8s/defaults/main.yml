@@ -1,7 +1,7 @@
 ---
 cgroup_driver : systemd
 k8s_cluster_name : k8s-local.com
-k8s_version : 1.19.2-00
+k8s_version : 1.19.2
 
 k8s_admin : k8s01
 pod_network_cidr : 10.244.0.0/16
