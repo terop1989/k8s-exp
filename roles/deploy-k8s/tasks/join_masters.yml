@@ -9,6 +9,10 @@
       shell: openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
       register: discovery_token_ca_cert_hash
 
+    - name: Upload certs
+      shell: kubeadm init phase upload-certs --upload-certs | tail -1
+      register: certificate_key
+
     - name: Get join path
       become: yes
       become_user: "{{ k8s_admin }}"
@@ -28,11 +32,12 @@
 
     - name: Join worker nodes
       when: not kubelet_conf.stat.exists
-      shell: 
+      shell:
         cmd: |
           kubeadm join {{ hostvars[groups['init_master'][0]].join_path.stdout }} \
           --token {{ hostvars[groups['init_master'][0]].join_token.stdout }} \
-          --discovery-token-ca-cert-hash sha256:{{ hostvars[groups['init_master'][0]].discovery_token_ca_cert_hash.stdout }} 
+          --discovery-token-ca-cert-hash sha256:{{ hostvars[groups['init_master'][0]].discovery_token_ca_cert_hash.stdout }} \
+          --control-plane --certificate-key {{ hostvars[groups['init_master'][0]].certificate_key.stdout }}
 
     - name: Kubelet enable
       service:
@@ -40,4 +45,4 @@
         state: started
         enabled: yes
 
-  when: inventory_hostname in groups['worker']
+  when: inventory_hostname in groups['other_masters']
