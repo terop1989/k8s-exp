@@ -1,12 +1,16 @@
 [master:children]
 init_master
+other_masters
 
 [init_master]
 k8s-01.local.com
+
+[other_masters]
+k8s-0[2:3].local.com
 
 [master:vars]
 ha_cluster_virtual_ip=192.168.0.179
 ha_cluster_virtual_port=7443
 
 [worker]
-k8s-0[2:3].local.com
+k8s-0[4:6].local.com

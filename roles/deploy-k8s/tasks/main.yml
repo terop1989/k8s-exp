@@ -45,6 +45,11 @@
   tags:
     - calico
 
+- name: Join Masters
+  import_tasks: join_masters.yml
+  tags:
+    - join_masters
+
 - name: Join Workers
   import_tasks: join_workers.yml
   tags:
