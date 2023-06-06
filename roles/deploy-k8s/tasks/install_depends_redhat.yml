@@ -1,0 +1,56 @@
+- name: Add repo kubernetes
+  yum_repository:
+    name: kubernetes
+    description: 'Base programs for k8s'
+    baseurl: 'https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64'
+    gpgcheck: yes
+    gpgkey: 
+      - 'https://packages.cloud.google.com/yum/doc/yum-key.gpg'
+      - 'https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg'
+
+- name: Docker repository for containerd
+  yum_repository:
+    name: docker
+    enabled: yes
+    baseurl: "https://download.docker.com/linux/centos/$releasever/$basearch/stable"
+    description: 'Docker'
+    gpgcheck: yes
+    gpgkey:
+      - 'https://download.docker.com/linux/centos/gpg'
+
+- name: Install python-dnf module
+  yum:
+    name: python2-dnf
+    state: present
+
+- name: Install Packages
+  dnf:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - containerd
+    - kubectl-{{ k8s_version }}-0
+    - kubelet-{{ k8s_version }}-0
+    - kubeadm-{{ k8s_version }}-0
+
+- name: Remove containerd config.toml 
+  file:
+    path: /etc/containerd/config.toml
+    state: absent 
+
+- name: Containerd
+  service:
+    name: containerd
+    state: started
+    enabled: yes
+
+- name: Load module permanent
+  copy:
+    src: containerd.conf
+    dest: /etc/modules-load.d/containerd.conf
+
+- name: Containerd
+  service:
+    name: containerd
+    state: started
+    enabled: yes

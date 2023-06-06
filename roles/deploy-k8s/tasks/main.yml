@@ -1,10 +1,19 @@
-- name: Bootstrap
+- name: Bootstrap Debian
   import_tasks: bootstrap.yml
   tags:
     - bootstrap
 
-- name: Install Dependencies
-  import_tasks: install-dependencies.yml
+- name: Install Dependencies on Debian
+  import_tasks: install_depends_debian.yml
+  when:
+    - ansible_facts['os_family'] == "Debian"
+  tags:
+    - depends
+
+- name: Install Dependencies on RedHat
+  import_tasks: install_depends_redhat.yml
+  when:
+    - ansible_facts['os_family'] == "RedHat"
   tags:
     - depends
 
