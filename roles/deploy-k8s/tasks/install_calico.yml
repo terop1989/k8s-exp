@@ -1,6 +1,6 @@
 - name: Download Calico Manifest
   get_url:
-    url: https://docs.projectcalico.org/v3.10/manifests/calico.yaml
+    url: https://docs.projectcalico.org/v{{ calico_version }}/manifests/calico.yaml
     dest: /tmp
 
 - name: Replace Pod CIDR
