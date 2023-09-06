@@ -3,11 +3,17 @@
     url: https://docs.projectcalico.org/v{{ calico_version }}/manifests/calico.yaml
     dest: /tmp
 
-- name: Replace Pod CIDR
+- name: Uncomment Pod CIDR parameter name
   replace:
     path: /tmp/calico.yaml
-    regexp: '192.168.0.0/16'
-    replace: '{{ pod_network_cidr }}'
+    regexp:  '# - name: CALICO_IPV4POOL_CIDR'
+    replace: '- name: CALICO_IPV4POOL_CIDR'
+
+- name: Uncommetn and replace Pod CIDR parameter value
+  replace:
+    path: /tmp/calico.yaml
+    regexp:  '#   value: "192.168.0.0/16"'
+    replace: '  value: "{{ pod_network_cidr }}"'
 
 - name: Install Calico
   become: yes
