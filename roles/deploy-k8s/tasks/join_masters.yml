@@ -22,7 +22,7 @@
   when: inventory_hostname in groups['init_master']
 
 
-- name: Join Workers
+- name: Join Masters
   block:
 
     - name: Check if kubelet.conf exists
@@ -30,7 +30,7 @@
         path: "/etc/kubernetes/kubelet.conf"
       register: kubelet_conf
 
-    - name: Join worker nodes
+    - name: Join master nodes
       when: not kubelet_conf.stat.exists
       shell:
         cmd: |
