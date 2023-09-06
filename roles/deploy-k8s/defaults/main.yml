@@ -6,3 +6,5 @@ k8s_version : 1.19.2
 k8s_admin : k8s_admin
 pod_network_cidr : 10.244.0.0/16
 service_network_cidr: 10.245.0.0/16
+
+calico_version: 3.16
