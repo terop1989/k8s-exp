@@ -1,3 +1,8 @@
-[plugins.cri]
+version = 2
+
+[plugins."io.containerd.grpc.v1.cri"]
   stream_server_address = "127.0.0.1"
   enable_tls_streaming = false
+
+[plugins."io.containerd.grpc.v1.cri".registry]
+  config_path = "/etc/containerd/certs.d"
