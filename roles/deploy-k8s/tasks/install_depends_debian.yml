@@ -16,10 +16,33 @@
     state: directory
     mode: '0755'
 
+- name: Create Containderd certs.d Directory
+  file:
+    path: /etc/containerd/certs.d
+    state: directory
+    mode: '0755'
+
+- name: Create Containerd local container repos directories
+  file:
+    path: "/etc/containerd/certs.d/{{ repo_item }}"
+    state: directory
+    mode: '0755'
+  loop: "{{ container_local_repos }}"
+  loop_control:
+    loop_var: repo_item
+
 - name: Copy Containerd Config File to Remote Hosts
   copy:
     src: config.toml
     dest: /etc/containerd/config.toml
+
+- name: Create Containerd local repos config files
+  template:
+    src: hosts.toml.j2
+    dest: "/etc/containerd/certs.d/{{ repo_item }}/hosts.toml"
+  loop: "{{ container_local_repos }}"
+  loop_control:
+    loop_var: repo_item
 
 - name: Restart Containerd Service
   service:

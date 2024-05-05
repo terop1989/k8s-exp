@@ -1,0 +1,5 @@
+server = "http://{{ repo_item }}"
+
+[host."http://{{ repo_item }}"]
+  capabilities = ["pull", "resolve"]
+  skip_verify = true
