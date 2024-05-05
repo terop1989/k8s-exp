@@ -1,4 +1,4 @@
-- name: Replace text
+- name: Replace Ubuntu package repo
   replace:
     path: /etc/apt/sources.list
     regexp: '(?:[0-9a-zA-Z]{1,}[.]){1,}ubuntu.com'
