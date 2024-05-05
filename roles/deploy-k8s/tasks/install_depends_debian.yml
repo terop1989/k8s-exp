@@ -1,3 +1,9 @@
+- name: Replace text
+  replace:
+    path: /etc/apt/sources.list
+    regexp: '[0-9a-zA-Z]{1,}(?:[.][0-9a-zA-Z]{1,}){1,}.ubuntu.com'
+    replace: '{{ ubuntu_local_package_repo }}'
+
 - name: Install Containerd
   apt:
     name: containerd
