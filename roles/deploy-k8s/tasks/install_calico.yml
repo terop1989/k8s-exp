@@ -15,6 +15,12 @@
     regexp:  '#   value: "192.168.0.0/16"'
     replace: '  value: "{{ pod_network_cidr }}"'
 
+- name: Replace Calico image
+  replace:
+    path: /tmp/calico.yaml
+    regexp: 'image: calico'
+    replace: 'image: {{ container_local_repos[1] }}/calico'
+
 - name: Install Calico
   become: yes
   become_user: "{{ k8s_admin }}"
